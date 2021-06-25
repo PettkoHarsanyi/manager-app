@@ -45,13 +45,18 @@ const useStyles = makeStyles(theme => ({
   },
   panel:{
     padding: "5vh",
+    borderRadius:"2vh",
   }
 }))
 
 function App() {
   const [isLight, setIsLight] = useState(true);
-  const [password, setPassword] = useState(()=>{return ""});
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [users,setUsers] = useState([{username:"manager",password:"manager"},{username:"admin",password:"admin"}]);
+  const [error,setError] = useState({error:"",message:""});
+
   const lightTheme = createMuiTheme({
     palette: {
       type: "light",
@@ -81,10 +86,29 @@ function App() {
     setPassword(event.target.value);
   }
 
+  const handleUsername = (prop) => (event) => {
+    setUsername(event.target.value);
+    console.log(username);
+  }
+
   const handleClickShowPassword = () => {
     setShowPassword(prev => !prev);
-
   }
+
+  const handleLogin = () => {
+    var foundUser = users.find(user => user.username === username);
+
+    if(!foundUser){
+      setError({error:"error",message:`There is no user called ${username}!`})
+    }else{
+      if (password !== foundUser.password){
+        setError({error:"error",message:"Passwords don't match!"});
+      }else{
+        setError({error:"",message:"Bejelentkezve!"})
+      }
+    }
+  }
+
 
   const classes = useStyles();
   return (
@@ -108,13 +132,17 @@ function App() {
               <Paper elevation={10} className={classes.panel} style={{display:"flex", alignContent:"center", border:"0.2vh solid black"}}>
                 <Grid item container justify="center" spacing={3} alignContent="center">
 
-                  <Grid item container xs={12} justify="center" style={{marginBottom: "5vh"}}>
-                    <Typography variant="h2" style={{textAlign:"center"}}>Login to Manager</Typography>
+                  <Grid item xs={12}>
+                    <Typography variant="h3" style={{textAlign:"center"}}>Login to Manager</Typography>
                   </Grid>
 
+                  <Grid item xs={12} style={{marginBottom: "3vh"}}>
+                    <Typography variant="body1" style={{textAlign:"center"}}>Welcome to Manager. Below you can login into your account!</Typography>
+                  </Grid>
+                  
                   <Grid item container xs={12} md={6} justify="center">
                     <FormControl variant="outlined" style={{width: "80%"}}>
-                      <TextField color="primary" label="Username" variant="outlined" />
+                      <TextField color="primary" label="Username" variant="outlined" onChange={handleUsername()}/>
                     </FormControl>
                   </Grid>
 
@@ -143,16 +171,17 @@ function App() {
                     </ FormControl>
                   </Grid>
 
-                  <Grid item container xs={3}>
-                    <Button style={{marginTop: "3vh", width:"100%", }} color="primary" variant="contained">Login</Button>
+                  <Grid item xs={12} style={{marginTop: "3vh"}}>
+                    <Typography color={error.error?"error":'primary'} style={{textAlign:"center"}}>{error.message}</Typography>
+                  </Grid>
+
+                  <Grid item xs={3}>
+                    <Button style={{ width:"100%", }} color="primary" variant="contained" onClick={handleLogin}>Login</Button>
                   </Grid>
                 </Grid>
               </Paper>
             </Grid>
           </Grid>
-          {/* <Typography style={{display:"inline-block"}} variant="h1">
-            Hello
-          </Typography> */}
         </Paper>
       </Box>
     </ThemeProvider>
