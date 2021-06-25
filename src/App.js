@@ -55,7 +55,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [users,setUsers] = useState([{username:"manager",password:"manager"},{username:"admin",password:"admin"}]);
-  const [error,setError] = useState({error:"",message:""});
+  const [error,setError] = useState();
 
   const lightTheme = createMuiTheme({
     palette: {
@@ -75,6 +75,13 @@ function App() {
       type: "dark",
     },
     overrides:{
+      MuiTextField:{
+        root:{
+          color:{
+            light:"#121212"
+          }
+        }
+      }
     }
   })
 
@@ -142,7 +149,7 @@ function App() {
                   
                   <Grid item container xs={12} md={6} justify="center">
                     <FormControl variant="outlined" style={{width: "80%"}}>
-                      <TextField color="primary" label="Username" variant="outlined" onChange={handleUsername()}/>
+                      <TextField label="Username" variant="outlined" onChange={handleUsername()} onKeyPress={(event)=>{if(event.key==="Enter"){handleLogin()}}}/>
                     </FormControl>
                   </Grid>
 
@@ -154,7 +161,7 @@ function App() {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={handlePassword()}
-                        
+                        onKeyPress={(event)=>{if(event.key==="Enter"){handleLogin()}}}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
@@ -171,8 +178,10 @@ function App() {
                     </ FormControl>
                   </Grid>
 
-                  <Grid item xs={12} style={{marginTop: "3vh"}}>
-                    <Typography color={error.error?"error":'primary'} style={{textAlign:"center"}}>{error.message}</Typography>
+                  <Grid container item xs={12} style={{marginTop: "3vh"}} justify="center">
+                    {error?<Paper style={{maxWidth:"fit-content", padding: "1vh 2vh 1vh 2vh", border:"0.2vh solid black"}}>
+                      <Typography color={error.error?"error":'primary'}>{error.message}</Typography>
+                    </Paper>:""}
                   </Grid>
 
                   <Grid item xs={3}>
