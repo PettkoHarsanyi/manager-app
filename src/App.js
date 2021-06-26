@@ -1,60 +1,38 @@
-import './App.css';
-import { makeStyles, Paper, ThemeProvider, createMuiTheme, Box, Typography, Switch, AppBar, Toolbar, Grid, TextField, OutlinedInput, InputAdornment, IconButton, InputLabel, FormControl, Button } from "../node_modules/@material-ui/core"
+import { makeStyles, ThemeProvider, createMuiTheme, Box, Paper } from "../node_modules/@material-ui/core"
 import { useState } from 'react';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { LoginPanel } from "./components/LoginPanel/LoginPanel";
+import { Header } from "./components/Header/Header";
 
 const useStyles = makeStyles(theme => ({
   app:{
-    width: "100%",
-    height: "100%",
-  },
-  paper:{
     width: "100%",
     height: "100vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    backgroundImage: "url(https://source.unsplash.com/collection/1548469/1920x1080?sig=683479)",
+    backgroundPosition: "70% 100%",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
   },
-  dButtonLight:{
-    display:"flex", 
-    flexDirection:"column", 
-    alignItems:"center", 
-    border: "0.3vh solid black", 
-    padding:"0 2vh 0 2vh",
-    borderRadius:"2vh",
-    backgroundColor: "#DCDCDC",
-    transition:"0.5s",
-    "&:hover":{
-      backgroundColor:"gray",
-    }
-  },
-  dButtonDark:{
-    display:"flex", 
-    flexDirection:"column", 
-    alignItems:"center", 
-    border: "0.3vh solid black", 
-    padding:"0 2vh 0 2vh",
-    borderRadius:"2vh",
-    backgroundColor: "#212121",
-    transition:"0.5s",
-    "&:hover":{
-      backgroundColor:"gray",
-    }
-  },
-  panel:{
-    padding: "5vh",
-    borderRadius:"2vh",
+  appDark:{
+    width: "100%",
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundImage: "url(https://source.unsplash.com/1920x1080/?dark)",
+    backgroundPosition: "70% 100%",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
   }
 }))
 
 function App() {
   const [isLight, setIsLight] = useState(true);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [users,setUsers] = useState([{username:"manager",password:"manager"},{username:"admin",password:"admin"}]);
+  const [users] = useState([{username:"manager",password:"manager"},{username:"admin",password:"admin"}]);
   const [error,setError] = useState();
 
   const lightTheme = createMuiTheme({
@@ -65,6 +43,10 @@ function App() {
       MuiAppBar:{
         colorDefault: {
           backgroundColor: "#90CAF9"
+        }
+      },
+      MuiPaper:{
+        root:{
         }
       }
     }
@@ -89,29 +71,24 @@ function App() {
     setIsLight(prev => !prev);
   }
 
-  const handlePassword = (prop) => (event) => {
-    setPassword(event.target.value);
-  }
-
-  const handleUsername = (prop) => (event) => {
-    setUsername(event.target.value);
-    console.log(username);
-  }
-
-  const handleClickShowPassword = () => {
-    setShowPassword(prev => !prev);
-  }
-
-  const handleLogin = () => {
+  const handleLogin = (username,password) => {
     var foundUser = users.find(user => user.username === username);
 
-    if(!foundUser){
-      setError({error:"error",message:`There is no user called ${username}!`})
+    if(username===""){
+      setError({error:"error",message:"Please fill the username"})
     }else{
-      if (password !== foundUser.password){
-        setError({error:"error",message:"Passwords don't match!"});
+      if(!foundUser){
+        setError({error:"error",message:`There is no user called ${username}!`})
       }else{
-        setError({error:"",message:"Bejelentkezve!"})
+        if(password===""){
+          setError({error:"error",message:"Please fill the password"})
+        }else{
+          if (password !== foundUser.password){
+            setError({error:"error",message:"The password is incorrect!"});
+          }else{
+            setError({error:"",message:"Logged in!"})
+          }
+        }
       }
     }
   }
@@ -120,79 +97,10 @@ function App() {
   const classes = useStyles();
   return (
     <ThemeProvider theme={isLight?lightTheme : darkTheme}>
-      <Box className={classes.app}>
-        <AppBar position="fixed" color="default">
-          <Toolbar>
-            <Typography  variant="h6" style={{flex: "1"}}>
-              Manager
-            </Typography>
-            <Box component="div" className={isLight ? classes.dButtonLight : classes.dButtonDark}>
-              <Switch color="primary" disableRipple onChange={handleTheme}/>
-              <Typography style={{fontSize:"1vh"}}>{isLight?"LIGHT MODE":"DARK MODE"}</Typography>
-            </Box>
-          </Toolbar>
-        </AppBar>
-        
-        <Paper className={classes.paper} square>
-          <Grid container justify="center">
-            <Grid item xs={6}>
-              <Paper elevation={10} className={classes.panel} style={{display:"flex", alignContent:"center", border:"0.2vh solid black"}}>
-                <Grid item container justify="center" spacing={3} alignContent="center">
-
-                  <Grid item xs={12}>
-                    <Typography variant="h3" style={{textAlign:"center"}}>Login to Manager</Typography>
-                  </Grid>
-
-                  <Grid item xs={12} style={{marginBottom: "3vh"}}>
-                    <Typography variant="body1" style={{textAlign:"center"}}>Welcome to Manager. Below you can login into your account!</Typography>
-                  </Grid>
-                  
-                  <Grid item container xs={12} md={6} justify="center">
-                    <FormControl variant="outlined" style={{width: "80%"}}>
-                      <TextField label="Username" variant="outlined" onChange={handleUsername()} onKeyPress={(event)=>{if(event.key==="Enter"){handleLogin()}}}/>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item container xs={12} md={6} justify="center">
-                    <FormControl variant="outlined" style={{width: "80%"}}>
-                      <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                      <OutlinedInput
-                        id="outlined-adornment-password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={password}
-                        onChange={handlePassword()}
-                        onKeyPress={(event)=>{if(event.key==="Enter"){handleLogin()}}}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              edge="end"
-                            >
-                              {showPassword ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        labelWidth={70}
-                        />
-                    </ FormControl>
-                  </Grid>
-
-                  <Grid container item xs={12} style={{marginTop: "3vh"}} justify="center">
-                    {error?<Paper style={{maxWidth:"fit-content", padding: "1vh 2vh 1vh 2vh", border:"0.2vh solid black"}}>
-                      <Typography color={error.error?"error":'primary'}>{error.message}</Typography>
-                    </Paper>:""}
-                  </Grid>
-
-                  <Grid item xs={3}>
-                    <Button style={{ width:"100%", }} color="primary" variant="contained" onClick={handleLogin}>Login</Button>
-                  </Grid>
-                </Grid>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Box>
+      <Paper className={isLight?classes.app:classes.appDark} square>
+        <Header  isLight={isLight} handleTheme={handleTheme} />
+        <LoginPanel handleLogin={handleLogin} error={error} isLight={isLight}/>
+      </Paper>
     </ThemeProvider>
   );
 }
