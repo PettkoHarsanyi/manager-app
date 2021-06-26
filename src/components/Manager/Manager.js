@@ -102,6 +102,9 @@ const useStyles = makeStyles(theme=>({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    "& *":{
+      fontWeight:"bold",
+    }
   },
 }))
 
@@ -111,25 +114,31 @@ export function Manager(props){
   const [members,setMembers] = useState([{name:"Figy Elek", birth:1999, team:"Feisbuk"},{name:"Patta Nóra", birth:2000, team:"Gogli"},{name:"Vak Cina", birth:1566, team:"Fájzer"}])
   const [change,setChange]= useState({name:"",birth:"",team:""});
   const [modified,setModified] = useState({});
+  const [action,setAction] = useState("");
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
-  const handleOpen = (member) => {
+  const handleOpen = (event,member) => {
     setOpen(true);
     setChange(member);
+    setAction(event);
     setModified(member);
-
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+
   if(users.find(user=>user.username===loggedUser)===undefined){
     return <Redirect to="/" />
   }
 
-  const handleChange = (member,newMember) =>{
-    setMembers(members.map(person => {if(person.name===member.name){ return newMember }else {return person}}))
+  const handleSend = () =>{
+    if(action==="modify"){
+      setMembers(members.map(person => {if(person.name===change.name){ return modified }else {return person}}))
+    }else{
+      setMembers([...members,modified])
+    }
     handleClose();
   }
 
@@ -150,7 +159,7 @@ export function Manager(props){
             Members
           </Grid>
           <Grid xs={12} lg={6} className={classes.add} item component={Typography} variant="h5">
-            <IconButton>
+            <IconButton  onClick={()=>handleOpen("add",{name:"",birth:"",team:""})}>
               <PersonAddIcon fontSize="large"/>
             </IconButton>
           </Grid>
@@ -165,7 +174,7 @@ export function Manager(props){
                 <Grid item component={Typography} xs={4} md={3}>{member.birth}</Grid >
                 <Grid item component={Typography} xs={4} md={3}>{member.team}</Grid >
                 <Grid item component={Box} style={{flex:"0", minWidth:"fit-content"}}>
-                  <IconButton onClick={()=>handleOpen(member)}>
+                  <IconButton onClick={()=>handleOpen("modify",member)}>
                     <EditIcon />
                   </IconButton>
                   <IconButton onClick={()=>handleDelete(member)}>
@@ -188,24 +197,22 @@ export function Manager(props){
       style={{backgroundColor: "rgba(0,0,0,0.8)"}}
     >
       <Grid container justify="center">
-        <Grid container item xs={5} style={{backgroundColor:isLight?"white":"gray", padding: "2vh 5vh 2vh 5vh"}} justify="center">
+        <Grid container item xs={5} style={{backgroundColor:isLight?"white":"gray", padding: "2vh 5vh 2vh 5vh", border:isLight?"0.1vh solid black":"0.1vh solid white", borderRadius:"2vh"}} justify="center">
           <Grid item container xs={12} alignItems="center" style={{marginBottom:"5vh",}}>
-            <Grid item xs={10}><Typography style={{ justifySelf:"flex-start", textAlign:"left"}} variant="h4">Modify {change.name}</Typography></Grid>
+            <Grid item xs={10}><Typography style={{ justifySelf:"flex-start", textAlign:"left", color:isLight?"black":"white"}}variant="h4">{action==="add"?"Add member":`Modify ${change.name}`}</Typography></Grid>
             <Grid item xs={2}><Typography style={{ justifySelf:"flex-end", textAlign:"right"}} variant="h4"><IconButton onClick={handleClose}><CloseIcon fontSize="large" /></IconButton></Typography></Grid>
           </Grid>
           
           <Grid item xs={12} container spacing={5} style={{marginBottom:"3vh"}}>
-            <Grid item xs={12} md={4}><TextField id="outlined-required" label="Name" defaultValue={change.name} onChange={handleModify('name')} variant="outlined"></TextField></Grid>
-            <Grid item xs={12} md={4}><TextField id="outlined-required" label="Birth" defaultValue={change.birth} onChange={handleModify('birth')} variant="outlined"></TextField></Grid>
-            <Grid item xs={12} md={4}><TextField id="outlined-required" label="Team" defaultValue={change.team} onChange={handleModify('team')} variant="outlined"></TextField></Grid>
+            <Grid item xs={12} lg={4}><TextField onKeyPress={(event)=>{if(event.key==="Enter"){handleSend(change)}}} label="Name" defaultValue={change.name} onChange={handleModify('name')} style={{width:"100%"}} variant="outlined"></TextField></Grid>
+            <Grid item xs={12} lg={4}><TextField onKeyPress={(event)=>{if(event.key==="Enter"){handleSend(change)}}} label="Birth" defaultValue={change.birth} onChange={handleModify('birth')} style={{width:"100%"}} variant="outlined"></TextField></Grid>
+            <Grid item xs={12} lg={4}><TextField onKeyPress={(event)=>{if(event.key==="Enter"){handleSend(change)}}} label="Team" defaultValue={change.team} onChange={handleModify('team')} style={{width:"100%"}} variant="outlined"></TextField></Grid>
           </Grid>
 
           <Grid item xs={12} container style={{textAlign:"center"}}>
-            <Grid item xs={6}>
-              <Button variant="outlined" color="primary" onClick={()=>handleChange(change,modified)}>Modify</Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button variant="outlined" color="secondary" onClick={handleClose}>Cancel</Button>
+            <Grid item xs={12}>
+              <Button variant="outlined" style={{marginRight:"3vh", borderColor:isLight?"green":"white", color:isLight?"green":"white"}} onClick={()=>handleSend(change)}>{action==="add"?"Add":"Modify"}</Button>
+              <Button variant="outlined" style={{borderColor:isLight?"red":"white", color:isLight?"red":"white"}} onClick={handleClose}>Cancel</Button>
             </Grid>
           </Grid>
         </Grid>
