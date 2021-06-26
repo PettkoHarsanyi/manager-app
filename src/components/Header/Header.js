@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
     transition:"0.5s",
     "&:hover":{
       backgroundColor:"gray",
-    }
+    },
   },
   modeButtonDark:{
     display:"flex", 
@@ -33,7 +33,7 @@ export function Header(props){
   const {isLight,handleTheme} = props;
   const classes = useStyles();
   return(
-    <AppBar position="fixed" color="default">
+    <AppBar style={{height:"70px", display:"flex", justifyContent:"center"}} position="fixed" color="default">
       <Toolbar>
         <Typography  variant="h6" style={{flex: "1"}}>
           <u>Manager</u>

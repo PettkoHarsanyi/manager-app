@@ -5,7 +5,7 @@ import { Header } from "./components/Header/Header";
 
 const useStyles = makeStyles(theme => ({
   app:{
-    width: "100%",
+    width: "100vw",
     height: "100vh",
     display: "flex",
     flexDirection: "column",
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     backgroundSize: "cover",
   },
   appDark:{
-    width: "100%",
+    width: "100vw",
     height: "100vh",
     display: "flex",
     flexDirection: "column",

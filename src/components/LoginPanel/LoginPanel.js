@@ -41,6 +41,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "",
     padding: "5vh",
     borderRadius:"2vh",
+    minWidth:"300px",
+
     "& *":{
       fontWeight:"bold"
     }
@@ -70,7 +72,7 @@ export function LoginPanel(props){
 
   return(
     <Grid container justify="center">
-      <Grid item xs={6}>
+      <Grid item xs={12} sm={8} lg={6}>
         <Paper elevation={10} className={isLight?classes.panel:classes.panelDark} style={{display:"flex", alignContent:"center", border:"0.2vh solid black"}}>
           <Grid item container justify="center" spacing={3} alignContent="center">
 
