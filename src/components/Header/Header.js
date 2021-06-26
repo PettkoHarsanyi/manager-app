@@ -3,7 +3,7 @@ import { AppBar, Box, makeStyles, Switch, Toolbar, Typography } from "@material-
 const useStyles = makeStyles(theme => ({
   modeButtonLight:{
     display:"flex", 
-    flexDirection:"column", 
+    flexDirection:"column",
     alignItems:"center", 
     border: "0.3vh solid black", 
     padding:"0 2vh 0 2vh",
@@ -35,8 +35,8 @@ export function Header(props){
   return(
     <AppBar style={{height:"70px", display:"flex", justifyContent:"center"}} position="fixed" color="default">
       <Toolbar>
-        <Typography  variant="h6" style={{flex: "1"}}>
-          <u>Manager</u>
+        <Typography  variant="h6" style={{flex: "1"}} >
+          <u style={{fontFamily: 'Pacifico', letterSpacing: "3px"}} >Manager</u>
         </Typography>
         <Box component="div" className={isLight ? classes.modeButtonLight : classes.modeButtonDark}>
           <Switch color="primary" disableRipple onChange={handleTheme}/>

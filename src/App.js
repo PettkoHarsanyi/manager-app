@@ -1,7 +1,9 @@
-import { makeStyles, ThemeProvider, createMuiTheme, Box, Paper } from "../node_modules/@material-ui/core"
+import { makeStyles, ThemeProvider, createMuiTheme, Paper } from "../node_modules/@material-ui/core"
 import { useState } from 'react';
 import { LoginPanel } from "./components/LoginPanel/LoginPanel";
 import { Header } from "./components/Header/Header";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { Manager } from "./components/Manager/Manager";
 
 const useStyles = makeStyles(theme => ({
   app:{
@@ -30,78 +32,45 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function App() {
+export function App() {
   const [isLight, setIsLight] = useState(true);
   const [users] = useState([{username:"manager",password:"manager"},{username:"admin",password:"admin"}]);
-  const [error,setError] = useState();
+  const [loggedUser, setLoggedUser] = useState("");
 
   const lightTheme = createMuiTheme({
-    palette: {
-      type: "light",
-    },
-    overrides:{
-      MuiAppBar:{
-        colorDefault: {
-          backgroundColor: "#90CAF9"
-        }
-      },
-      MuiPaper:{
-        root:{
-        }
-      }
-    }
+    palette: {type: "light",},overrides:{MuiAppBar:{colorDefault: {backgroundColor: "#90CAF9"}},}
   })
 
   const darkTheme = createMuiTheme({
-    palette: {
-      type: "dark",
-    },
-    overrides:{
-      MuiTextField:{
-        root:{
-          color:{
-            light:"#121212"
-          }
-        }
-      }
-    }
+    palette: {type: "dark",}, overrides:{MuiTextField:{root:{color:{light:"#121212"}}}}
   })
 
   const handleTheme = () => {
     setIsLight(prev => !prev);
   }
 
-  const handleLogin = (username,password) => {
-    var foundUser = users.find(user => user.username === username);
-
-    if(username===""){
-      setError({error:"error",message:"Please fill the username"})
-    }else{
-      if(!foundUser){
-        setError({error:"error",message:`There is no user called ${username}!`})
-      }else{
-        if(password===""){
-          setError({error:"error",message:"Please fill the password"})
-        }else{
-          if (password !== foundUser.password){
-            setError({error:"error",message:"The password is incorrect!"});
-          }else{
-            setError({error:"",message:"Logged in!"})
-          }
-        }
-      }
-    }
+  const logUser = (user) => {
+    setLoggedUser(user);
   }
-
 
   const classes = useStyles();
   return (
-    <ThemeProvider theme={isLight?lightTheme : darkTheme}>
-      <Paper className={isLight?classes.app:classes.appDark} square>
-        <Header  isLight={isLight} handleTheme={handleTheme} />
-        <LoginPanel handleLogin={handleLogin} error={error} isLight={isLight}/>
-      </Paper>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={isLight?lightTheme : darkTheme}>
+        <Paper className={isLight?classes.app:classes.appDark} square>
+          <Header  isLight={isLight} handleTheme={handleTheme} />
+
+          <Switch>
+            <Route exact path="/">  
+              <LoginPanel logUser={logUser} users={users} isLight={isLight}/>
+            </Route>
+            <Route path="/manager">
+              <Manager loggedUser={loggedUser} users={users} isLight={isLight}/>
+            </Route>
+          </Switch>
+        </Paper>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
