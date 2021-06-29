@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundImage: "url(https://source.unsplash.com/collection/1548469/1920x1080?sig=683479)",
+    backgroundImage: "url(https://source.unsplash.com/1920x1080/?light)",
     backgroundPosition: "70% 100%",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
