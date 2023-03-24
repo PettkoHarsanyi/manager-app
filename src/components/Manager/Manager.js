@@ -1,12 +1,13 @@
 import { Box, Button, IconButton, makeStyles, Modal, Paper, TextField} from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import { Grid } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
+import axios from "axios"
 
 const useStyles = makeStyles(theme=>({
   panel:{
@@ -111,12 +112,20 @@ const useStyles = makeStyles(theme=>({
 
 export function Manager(props){
   const {loggedUser, users, isLight} = props;
-  const [members,setMembers] = useState([{name:"Figy Elek", birth:1999, team:"Feisbuk"},{name:"Patta Nóra", birth:2000, team:"Gogli"},{name:"Vak Cina", birth:1566, team:"Fájzer"}])
+  const [members,setMembers] = useState([])
   const [change,setChange]= useState({name:"",birth:"",team:""});
   const [modified,setModified] = useState({});
   const [action,setAction] = useState("");
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+
+  useEffect(()=>{
+    let isSubscribed = true;
+    axios.get("/api/users").then(response => {
+      if(isSubscribed) setMembers(response.data.users)
+    })
+    return () => isSubscribed = false;
+  },[]);
 
   const handleOpen = (event,member) => {
     setOpen(true);
@@ -135,25 +144,27 @@ export function Manager(props){
 
   const handleSend = () =>{
     if(action==="modify"){
-      setMembers(members.map(person => {if(person.name===change.name){ return modified }else {return person}}))
+      axios.put("http://localhost:5000/api/modifyuser",{from: change,to: modified}).then((response)=>{setMembers(response.data.users)});
+      // setMembers(members.map(person => {if(person.name===change.name){ return modified }else {return person}}))
     }else{
-      setMembers([...members,modified])
+      axios.post("http://localhost:5000/api/adduser", modified).then((response)=>{setMembers(response.data.users)});
     }
     handleClose();
   }
 
   const handleDelete = (member) => {
-    setMembers(members.filter(person => person.name !== member.name))
+    axios.put("http://localhost:5000/api/deleteuser", member).then((response)=>{setMembers(response.data.users)});
   }
 
   const handleModify = (prop) => (event) => {
     setModified({...modified, [prop]: event.target.value});
   }
 
+
   return(
     <>
     <Grid container justify="center">
-      <Grid item container xs={6} component={Paper} elevation={10} className={isLight?classes.panel:classes.panelDark} direction="column" alignItems="center">
+      <Grid item container xs={6} component={Paper} elevation={10} className={isLight?classes.panel:classes.panelDark} direction="row" alignItems="center">
         <Grid container item xs={12} component={Paper} elevation={4} className={isLight?classes.header:classes.headerDark} style={{marginBottom:"5vh", padding:"1vh 2vh 1vh 2vh"}}>
           <Grid xs={12} lg={6} className={classes.members} item component={Typography} variant="h3">
             Members

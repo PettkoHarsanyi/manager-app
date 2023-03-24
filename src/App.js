@@ -1,9 +1,13 @@
 import { makeStyles, ThemeProvider, createMuiTheme, Paper } from "../node_modules/@material-ui/core"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoginPanel } from "./components/LoginPanel/LoginPanel";
 import { Header } from "./components/Header/Header";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Manager } from "./components/Manager/Manager";
+import axios from "axios";
+import UnsplashReact, { Base64Uploader, withDefaultProps } from "unsplash-react"
+
+const MY_ACCESS_KEY = "be5vV-d9JAt2M7pAEqyDK5Ob_7RXEHHKCA-mBFD4zjs"
 
 const useStyles = makeStyles(theme => ({
   app:{
@@ -13,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundImage: "url(https://source.unsplash.com/collection/1548469/1920x1080?sig=683479)",
+    backgroundImage: "url(https://source.unsplash.com/1920x1080/?light)",
     backgroundPosition: "70% 100%",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
@@ -37,6 +41,10 @@ export function App() {
   const [users] = useState([{username:"manager",password:"manager"},{username:"admin",password:"admin"}]);
   const [loggedUser, setLoggedUser] = useState("");
 
+  useEffect(()=>{
+    
+  },[])
+
   const lightTheme = createMuiTheme({
     palette: {type: "light",},overrides:{MuiAppBar:{colorDefault: {backgroundColor: "#90CAF9"}},}
   })
@@ -53,13 +61,13 @@ export function App() {
     setLoggedUser(user);
   }
 
+
   const classes = useStyles();
   return (
     <BrowserRouter>
       <ThemeProvider theme={isLight?lightTheme : darkTheme}>
         <Paper className={isLight?classes.app:classes.appDark} square>
           <Header  isLight={isLight} handleTheme={handleTheme} />
-
           <Switch>
             <Route exact path="/">  
               <LoginPanel logUser={logUser} users={users} isLight={isLight}/>
