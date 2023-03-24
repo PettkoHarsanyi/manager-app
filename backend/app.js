@@ -2,9 +2,12 @@ const express = require("express");
 var request = require("request");
 var bodyParser = require('body-parser');
 const { ViewArrayTwoTone } = require("@material-ui/icons");
-
+const cors = require('cors');
 
 const app = express();
+app.use(cors({
+  origin: '*'
+}));
 const port = 5000;
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -15,7 +18,7 @@ app.use(express.json());
 
 var users = [{name:"Figy Elek", birth:1999, team:"Feisbuk"},{name:"Patta Nóra", birth:2000, team:"Gogli"},{name:"Vak Cina", birth:1566, team:"Fájzer"}];
 
-app.get("/api/users", (req,res) => res.send({users}));
+app.get("/api/users", (req,res) => {res.send({users})});
 
 app.post('/api/adduser', (req, res) => {
   var user = req.body;

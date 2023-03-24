@@ -144,16 +144,16 @@ export function Manager(props){
 
   const handleSend = () =>{
     if(action==="modify"){
-      axios.put("http://localhost:3000/api/modifyuser",{from: change,to: modified}).then((response)=>{setMembers(response.data.users)});
+      axios.put("http://localhost:5000/api/modifyuser",{from: change,to: modified}).then((response)=>{setMembers(response.data.users)});
       // setMembers(members.map(person => {if(person.name===change.name){ return modified }else {return person}}))
     }else{
-      axios.post("http://localhost:3000/api/adduser", modified).then((response)=>{setMembers(response.data.users)});
+      axios.post("http://localhost:5000/api/adduser", modified).then((response)=>{setMembers(response.data.users)});
     }
     handleClose();
   }
 
   const handleDelete = (member) => {
-    axios.put("http://localhost:3000/api/deleteuser", member).then((response)=>{setMembers(response.data.users)});
+    axios.put("http://localhost:5000/api/deleteuser", member).then((response)=>{setMembers(response.data.users)});
   }
 
   const handleModify = (prop) => (event) => {
@@ -164,7 +164,7 @@ export function Manager(props){
   return(
     <>
     <Grid container justify="center">
-      <Grid item container xs={6} component={Paper} elevation={10} className={isLight?classes.panel:classes.panelDark} direction="column" alignItems="center">
+      <Grid item container xs={6} component={Paper} elevation={10} className={isLight?classes.panel:classes.panelDark} direction="row" alignItems="center">
         <Grid container item xs={12} component={Paper} elevation={4} className={isLight?classes.header:classes.headerDark} style={{marginBottom:"5vh", padding:"1vh 2vh 1vh 2vh"}}>
           <Grid xs={12} lg={6} className={classes.members} item component={Typography} variant="h3">
             Members
