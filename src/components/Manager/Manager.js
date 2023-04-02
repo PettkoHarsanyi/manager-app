@@ -121,7 +121,7 @@ export function Manager(props){
 
   useEffect(()=>{
     let isSubscribed = true;
-    axios.get("/api/users").then(response => {
+    axios.get("https://manager-backend.azurewebsites.net/users").then(response => {
       if(isSubscribed) setMembers(response.data.users)
     })
     return () => isSubscribed = false;
@@ -144,16 +144,16 @@ export function Manager(props){
 
   const handleSend = () =>{
     if(action==="modify"){
-      axios.put("http://localhost:5000/api/modifyuser",{from: change,to: modified}).then((response)=>{setMembers(response.data.users)});
+      axios.put("https://manager-backend.azurewebsites.net/modifyuser",{from: change,to: modified}).then((response)=>{setMembers(response.data.users)});
       // setMembers(members.map(person => {if(person.name===change.name){ return modified }else {return person}}))
     }else{
-      axios.post("http://localhost:5000/api/adduser", modified).then((response)=>{setMembers(response.data.users)});
+      axios.post("https://manager-backend.azurewebsites.net/adduser", modified).then((response)=>{setMembers(response.data.users)});
     }
     handleClose();
   }
 
   const handleDelete = (member) => {
-    axios.put("http://localhost:5000/api/deleteuser", member).then((response)=>{setMembers(response.data.users)});
+    axios.put("https://manager-backend.azurewebsites.net/deleteuser", member).then((response)=>{setMembers(response.data.users)});
   }
 
   const handleModify = (prop) => (event) => {

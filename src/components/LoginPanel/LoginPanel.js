@@ -106,13 +106,13 @@ export function LoginPanel(props){
             
             <Grid item container xs={12} md={6} justify="center">
               <FormControl variant="outlined" style={{width: "80%"}}>
-                <TextField label="Username" variant="outlined" onChange={handleUsername()} onKeyPress={(event)=>{if(event.key==="Enter"){handleLogin(username,password)}}}/>
+                <TextField label="Username (admin)" variant="outlined" onChange={handleUsername()} onKeyPress={(event)=>{if(event.key==="Enter"){handleLogin(username,password)}}}/>
               </FormControl>
             </Grid>
 
             <Grid item container xs={12} md={6} justify="center">
               <FormControl variant="outlined" style={{width: "80%"}}>
-                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                <InputLabel htmlFor="outlined-adornment-password" >Password (admin)</InputLabel>
                 <OutlinedInput
                   id="outlined-adornment-password"
                   type={showPassword ? 'text' : 'password'}
